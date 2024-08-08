@@ -1,0 +1,12 @@
+version: '3.7'
+services:
+  healthcheck-worker-final:
+    image: m3xd/healthcheck-worker:0.0.1
+    network_mode: host
+    environment:
+      - DB_SOURCE=postgresql://root:2108@localhost:5432/sms?sslmode=disable
+      - API_KEY=cEpiTUpaRUJLd241LU9lWDVoM3Q6Y0FpWWFaUkhTakMxV2FMOUZ1TGFQdw==
+      - CLOUD_ID=7832b0d2bcf1429e932c4bf42d8e866d:dXMtY2VudHJhbDEuZ2NwLmNsb3VkLmVzLmlvJGNlMTM4MDFmYmIyMzRiYjVhM2YzNTQ1YjYwMzIyNDRjJGRhN2EwZjBiNDQ0YzQ0YTNiYzNiYzZlZTQ0MGFhMmJh
+      - KAFKA_ADDRESS=127.0.0.1:9092
+      - REDIS_ADDRESS=localhost:6379
+      - REDIS_PASSWORD=eYVX7EwVmmxKPCDmwMtyKVge8oLd2t82

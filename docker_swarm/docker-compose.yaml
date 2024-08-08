@@ -1,0 +1,121 @@
+version: '3.7'
+
+services:
+  traefik:
+    image: traefik:v2.10
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.swarmMode=true"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8085:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - traefik-public
+    deploy:
+      replicas: 1
+      placement:
+          constraints:
+          - node.role == manager
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.traefik.rule=Host(`traefik.localhost`)"
+        - "traefik.http.routers.traefik.service=api@internal"
+        - "traefik.http.services.traefik.loadbalancer.server.port=888"
+        - "traefik.http.routers.traefik.entrypoints=web"
+        - "traefik.docker.network=traefik-public"
+
+  server-management:
+    image: m3xd/server-management:0.0.5
+    ports:
+      - "8081:8081"
+    environment:
+      - KAFKA_ADDRESS=host.docker.internal:29092
+      - REDIS_ADDRESS=host.docker.internal:6379
+      - REDIS_PASSWORD=eYVX7EwVmmxKPCDmwMtyKVge8oLd2t82
+      - DB_SOURCE=postgresql://root:2108@host.docker.internal:5432/sms?sslmode=disable
+      - API_KEY=cEpiTUpaRUJLd241LU9lWDVoM3Q6Y0FpWWFaUkhTakMxV2FMOUZ1TGFQdw==
+      - CLOUD_ID=7832b0d2bcf1429e932c4bf42d8e866d:dXMtY2VudHJhbDEuZ2NwLmNsb3VkLmVzLmlvJGNlMTM4MDFmYmIyMzRiYjVhM2YzNTQ1YjYwMzIyNDRjJGRhN2EwZjBiNDQ0YzQ0YTNiYzNiYzZlZTQ0MGFhMmJh
+      - SECRET_KEY=secret
+    networks:
+      - traefik-public
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.docker.network=traefik-public"
+        - "traefik.enable=true"
+        - "traefik.http.routers.sms.rule=PathPrefix(`/server-management`)"
+        - "traefik.http.routers.sms.middlewares=strip-prefix"
+        - "traefik.http.middlewares.strip-prefix.stripprefix.prefixes=/server-management"
+        - "traefik.http.services.sms.loadbalancer.server.port=8081"
+        - "traefik.http.routers.sms.entrypoints=web"
+
+  healthcheck-server:
+    image: m3xd/healthcheck-server:0.0.2
+    environment:
+      - KAFKA_ADDRESS=host.docker.internal:29092
+    networks:
+      - traefik-public
+    ports:
+      - "8082:8082"
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.healthcheck-server.rule=PathPrefix(`/healthcheck`)"
+        - "traefik.http.services.healthcheck-server.loadbalancer.server.port=8082"
+        - "traefik.http.routers.healthcheck-server.entrypoints=web"
+        - "traefik.docker.network=traefik-public"
+
+  healthcheck-worker:
+    image: m3xd/healthcheck-worker:0.0.1
+    environment:
+      - DB_SOURCE=postgresql://root:2108@host.docker.internal:5432/sms?sslmode=disable
+      - API_KEY=cEpiTUpaRUJLd241LU9lWDVoM3Q6Y0FpWWFaUkhTakMxV2FMOUZ1TGFQdw==
+      - CLOUD_ID=7832b0d2bcf1429e932c4bf42d8e866d:dXMtY2VudHJhbDEuZ2NwLmNsb3VkLmVzLmlvJGNlMTM4MDFmYmIyMzRiYjVhM2YzNTQ1YjYwMzIyNDRjJGRhN2EwZjBiNDQ0YzQ0YTNiYzNiYzZlZTQ0MGFhMmJh
+      - KAFKA_ADDRESS=host.docker.internal:29092
+      - REDIS_ADDRESS=host.docker.internal:6379
+      - REDIS_PASSWORD=eYVX7EwVmmxKPCDmwMtyKVge8oLd2t82
+    networks:
+      - traefik-public
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.enable=false"
+
+  mail-service:
+    image: m3xd/mail-service:0.0.5
+    environment:
+      - KAFKA_ADDRESS=host.docker.internal:29092
+    networks:
+      - traefik-public
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.enable=false"
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      labels:
+        - "traefik.enable=false"
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - traefik-public
+
+volumes:
+    portainer_data:
+networks:
+    traefik-public:
+      external: true

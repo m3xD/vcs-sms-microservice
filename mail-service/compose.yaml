@@ -1,0 +1,7 @@
+version: '3.7'
+services:
+  mail-service:
+    image: m3xd/mail-service:0.0.5
+    network_mode: host
+    environment:
+      - KAFKA_ADDRESS=127.0.0.1:9092
