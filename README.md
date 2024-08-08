@@ -39,6 +39,10 @@
 - Các request giờ đây đều được gửi qua url **http://traefik.local/**
   * Đối với các request tới heathcheck-server sẽ là: **http://traefik.local/healthcheck**
   * Đối với các request tới server-management sẽ là: **http://traefik.local/server-management**
+- Router để forward đúng service trên dashboard traefik:
+ ![router](pic/router.png)
+- Load balancer(nơi tiếp nhận service sau router) trên dashboard traefik:
+ ![load_balancer](pic/load_balancer.png)
 
 ## 4. Key thay đổi chính:
 - Sửa công thức uptime: hiệu quả hơn khi sử dụng aggs thay vì duyệt qua các bản ghi.
