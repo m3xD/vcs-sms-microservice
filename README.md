@@ -33,12 +33,12 @@
 - Có thể join các worker với node manager vừa khởi tạo với token: `docker swarm join --token <token>`
 - Thực hiện điền các biến môi trường .env có trong folder **docker_swarm**.
 - Thiết lập docker stack có trong file compose bằng cách: `docker stack deploy -c docker-compose.yaml <tên_stack>`
-- Để xoá stack sử dụng: `docker stack rm <tên_stack>.
+- Để xoá stack sử dụng: `docker stack rm <tên_stack>`.
   
 ## 3. Thực thi các chức năng:
-- Các request giờ đây đều được gửi qua url **http://traefik.local/**:
-  * Đối với các request tới heathcheck-server sẽ là: **http://traefik.local/healthcheck**:
-  * Đối với các request tới server-management sẽ là: **http://traefik.local/server-management**:
+- Các request giờ đây đều được gửi qua url **http://traefik.local/**
+  * Đối với các request tới heathcheck-server sẽ là: **http://traefik.local/healthcheck**
+  * Đối với các request tới server-management sẽ là: **http://traefik.local/server-management**
 
 ## 4. Key thay đổi chính:
 - Sửa công thức uptime: hiệu quả hơn khi sử dụng aggs thay vì duyệt qua các bản ghi.
