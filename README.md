@@ -1,7 +1,7 @@
 # vcs-sms-microservice
 
 ## 1. Overview hệ thống:
-![overview](pic/overview2.png)
+![overview](pic/overview_2.png)
 - Hệ thống được phân chia thành các servieces như:
   * Healthcheck-server:để nhận request từ các agents.
   * Healthcheck-worker:thực hiện xử lý các request từ **healthcheck-server**, cập nhật các server vừa gửi thông tin, các server hiện thời.
@@ -12,6 +12,6 @@
 ### 1.2. Healthcheck-worker:
 ![healthcheck_worker](pic/healthcheck_worker.png)
 ### 1.3. Server-management:
-![Server-management](pic/Server_management.png)
+![Server-management](pic/service_management.png)
 ### 1.4. Mail:
 ![mail](pic/mail.png)
