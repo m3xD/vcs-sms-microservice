@@ -48,4 +48,4 @@
 - Sửa công thức uptime: hiệu quả hơn khi sử dụng aggs thay vì duyệt qua các bản ghi.
 - Sử dụng heathcheck-server làm server tập trung để agent gửi request lên, thay vì server phải chủ động đi ping thì agent sẽ gửi thông tin định kì mỗi 30s.
 - Phân chia ứng dụng thành các microservice, sử dụng docker swarm để thực hiện chạy các container trên nhiều node.
-- Thiết lập traefik để thực hiện nhiệm vụ router, load balancer, server discovery.
+- Thiết lập traefik để thực hiện nhiệm vụ router, load balancer, service discovery.
